@@ -11,12 +11,6 @@ importers:
       express:
         specifier: ^4.21.2
         version: 4.21.2
-      tsc:
-        specifier: ^2.0.4
-        version: 2.0.4
-      typescript:
-        specifier: ^5.7.2
-        version: 5.7.2
       ws:
         specifier: ^8.18.0
         version: 8.18.0
@@ -30,6 +24,9 @@ importers:
       '@types/ws':
         specifier: ^8.5.13
         version: 8.5.13
+      typescript:
+        specifier: ^5.7.2
+        version: 5.7.2
 
 packages:
 
@@ -316,10 +313,6 @@ packages:
   toidentifier@1.0.1:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
     engines: {node: '>=0.6'}
-
-  tsc@2.0.4:
-    resolution: {integrity: sha512-fzoSieZI5KKJVBYGvwbVZs/J5za84f2lSTLPYf6AGiIf43tZ3GNrI1QzTLcjtyDDP4aLxd46RTZq1nQxe7+k5Q==}
-    hasBin: true
 
   type-is@1.6.18:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}
@@ -692,8 +685,6 @@ snapshots:
   statuses@2.0.1: {}
 
   toidentifier@1.0.1: {}
-
-  tsc@2.0.4: {}
 
   type-is@1.6.18:
     dependencies:
