@@ -23,6 +23,7 @@ SensorDataWss.on("connection", (ws, request) => {
     ws.on("error", (e) => {
         console.log(e);
     });
+    let lastUpdateTime = 0;
     ws.on("message", (data) => {
         //  Add Throttling for the data broadcast.
         var _a;
@@ -30,25 +31,30 @@ SensorDataWss.on("connection", (ws, request) => {
         const clientKey = params.get("apikey");
         const isAuthorized = API_KEY === clientKey;
         clientMetaData.set(ws, { isAuthorized });
+        const currentTime = Date.now();
         if ((_a = clientMetaData.get(ws)) === null || _a === void 0 ? void 0 : _a.isAuthorized) {
-            if (Buffer.isBuffer(data)) {
-                // Convert buffer to string
-                const decodedMessage = data.toString();
-                console.log(`Message received: ${decodedMessage}`);
-                SensorDataWss.clients.forEach((client) => {
-                    if (client.readyState === ws_1.WebSocket.OPEN) {
-                        client.send(decodedMessage);
-                    }
-                });
-            }
-            else {
-                // Already a string
-                console.log("Message recieved : ", data);
-                SensorDataWss.clients.forEach((client) => {
-                    if (client.readyState === ws_1.WebSocket.OPEN) {
-                        client.send(data);
-                    }
-                });
+            if (currentTime - lastUpdateTime >= 4000) {
+                if (Buffer.isBuffer(data)) {
+                    // Convert buffer to string
+                    const decodedMessage = data.toString();
+                    console.log(`Message received: ${decodedMessage}`);
+                    SensorDataWss.clients.forEach((client) => {
+                        if (client.readyState === ws_1.WebSocket.OPEN) {
+                            client.send(decodedMessage);
+                        }
+                        lastUpdateTime = currentTime;
+                    });
+                }
+                else {
+                    // Already a string
+                    console.log("Message recieved : ", data);
+                    SensorDataWss.clients.forEach((client) => {
+                        if (client.readyState === ws_1.WebSocket.OPEN) {
+                            client.send(data);
+                        }
+                        lastUpdateTime = currentTime;
+                    });
+                }
             }
         }
         else {

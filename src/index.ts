@@ -27,6 +27,8 @@ SensorDataWss.on("connection", (ws, request) => {
     console.log(e);
   });
 
+  let lastUpdateTime = 0;
+
   ws.on("message", (data) => {
     //  Add Throttling for the data broadcast.
 
@@ -39,25 +41,30 @@ SensorDataWss.on("connection", (ws, request) => {
     const isAuthorized = API_KEY === clientKey;
 
     clientMetaData.set(ws, { isAuthorized });
+    const currentTime = Date.now();
 
     if (clientMetaData.get(ws)?.isAuthorized) {
-      if (Buffer.isBuffer(data)) {
-        // Convert buffer to string
-        const decodedMessage = data.toString();
-        console.log(`Message received: ${decodedMessage}`);
-        SensorDataWss.clients.forEach((client) => {
-          if (client.readyState === WebSocket.OPEN) {
-            client.send(decodedMessage);
-          }
-        });
-      } else {
-        // Already a string
-        console.log("Message recieved : ", data);
-        SensorDataWss.clients.forEach((client) => {
-          if (client.readyState === WebSocket.OPEN) {
-            client.send(data);
-          }
-        });
+      if (currentTime - lastUpdateTime >= 4000) {
+        if (Buffer.isBuffer(data)) {
+          // Convert buffer to string
+          const decodedMessage = data.toString();
+          console.log(`Message received: ${decodedMessage}`);
+          SensorDataWss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+              client.send(decodedMessage);
+            }
+            lastUpdateTime = currentTime;
+          });
+        } else {
+          // Already a string
+          console.log("Message recieved : ", data);
+          SensorDataWss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+              client.send(data);
+            }
+            lastUpdateTime = currentTime;
+          });
+        }
       }
     } else {
       ws.send("You are not authorized to broadcast data.");
