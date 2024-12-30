@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "pnpm tsc -b && node dist/index.js"
+    "dev": "pnpm tsc -b && node dist/index.js",
+    "build": "pnpm tsc -b",
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
